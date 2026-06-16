@@ -1,0 +1,172 @@
+{
+  "name": "KidPlanner AI Parent Assistant - Demo Placeholder",
+  "active": false,
+  "nodes": [
+    {
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1,
+      "position": [0, 0],
+      "parameters": {
+        "updates": ["message"]
+      }
+    },
+    {
+      "name": "Normalize Telegram Message",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [220, 0],
+      "parameters": {
+        "functionCode": "// Demo placeholder only. Replace with real normalization logic locally.\nreturn [{ json: { telegram_user_id: 'DEMO_USER_ID', telegram_chat_id: 'DEMO_CHAT_ID', message_text: 'Demo parenting question' } }];"
+      }
+    },
+    {
+      "name": "Check User Limit in PostgreSQL",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [440, 0],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT 'DEMO_USER_ID' AS telegram_user_id, 3 AS remaining_requests;"
+      }
+    },
+    {
+      "name": "IF Has Available Requests",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [660, 0],
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{$json.remaining_requests}}",
+              "operation": "larger",
+              "value2": 0
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "OpenAI Generate Answer",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [880, -120],
+      "parameters": {
+        "resource": "chat",
+        "operation": "message",
+        "model": "gpt-4o-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are a helpful AI assistant for parents."
+            },
+            {
+              "role": "user",
+              "content": "={{$json.message_text || 'Demo question'}}"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Save Message History",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [1100, -120],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- Save user and assistant messages locally in production."
+      }
+    },
+    {
+      "name": "Telegram Send AI Answer",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1320, -120],
+      "parameters": {
+        "chatId": "DEMO_CHAT_ID",
+        "text": "Demo AI answer for parent"
+      }
+    },
+    {
+      "name": "Telegram Send Limit Message",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [880, 160],
+      "parameters": {
+        "chatId": "DEMO_CHAT_ID",
+        "text": "You have reached your free request limit. You can buy extra requests."
+      }
+    },
+    {
+      "name": "Payment Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [0, 420],
+      "parameters": {
+        "path": "kidplanner-payment-demo",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      }
+    },
+    {
+      "name": "Normalize Payment Event",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [220, 420],
+      "parameters": {
+        "functionCode": "return [{ json: { telegram_user_id: 'DEMO_USER_ID', status: 'succeeded', extra_requests_added: 50 } }];"
+      }
+    },
+    {
+      "name": "Add Extra Requests",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [440, 420],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "-- UPDATE users_tariff_kidplanner SET extra_requests = extra_requests + 50 WHERE telegram_user_id = 'DEMO_USER_ID';"
+      }
+    },
+    {
+      "name": "Daily Tips Schedule",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [0, 760],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Send Daily Tip",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [220, 760],
+      "parameters": {
+        "chatId": "DEMO_CHAT_ID",
+        "text": "Daily demo parenting tip"
+      }
+    }
+  ],
+  "connections": {},
+  "settings": {},
+  "staticData": null,
+  "tags": [
+    {
+      "name": "demo"
+    }
+  ],
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "description": "Safe public placeholder. No real credentials, webhook IDs, chat IDs, or private data."
+  }
+}
