@@ -22,6 +22,36 @@ The project is designed as a portfolio-ready automation template built with **Te
 
 ---
 
+## 🖼️ Demo Screenshots
+
+### Telegram AI assistant
+
+![Telegram AI assistant](docs/screenshots/02-ai-parent-question.png)
+
+### Daily parenting tip
+
+![Daily parenting tip](docs/screenshots/10-daily-tip.png)
+
+### n8n workflow overview
+
+![n8n workflow overview](docs/screenshots/07-n8n-workflow.png)
+
+### PostgreSQL users and tariffs
+
+![PostgreSQL users and tariffs](docs/screenshots/08-postgresql-users.png)
+
+### PostgreSQL message history
+
+![PostgreSQL message history](docs/screenshots/09-postgresql-history.png)
+
+### Vector store records
+
+![Vector store records](docs/screenshots/11-vector-store-records.png)
+
+More details: [`docs/demo-screenshots.md`](docs/demo-screenshots.md)
+
+---
+
 ## ✨ Features
 
 - Telegram bot interface
@@ -92,7 +122,14 @@ kidplanner-ai-parent-assistant/
 │   ├── architecture.md
 │   ├── setup-checklist.md
 │   ├── security.md
-│   └── demo-screenshots.md
+│   ├── demo-screenshots.md
+│   └── screenshots/
+│       ├── 02-ai-parent-question.png
+│       ├── 07-n8n-workflow.png
+│       ├── 08-postgresql-users.png
+│       ├── 09-postgresql-history.png
+│       ├── 10-daily-tip.png
+│       └── 11-vector-store-records.png
 ├── sql/
 │   ├── 001_schema.sql
 │   ├── 002_demo_data.sql
